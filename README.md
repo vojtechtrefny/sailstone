@@ -1,1 +1,1 @@
-Simple Hearthstone cards browsing application using HearthstoneJSON API for Sailfish OS.
+Simple Hearthstone cards browsing application using Hearthstone API http://hearthstoneapi.com/ for Sailfish OS.
