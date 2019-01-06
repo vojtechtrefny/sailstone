@@ -3,8 +3,8 @@ import Sailfish.Silica 1.0
 
 PullDownMenu {
     MenuItem {
-        text: "Search cards"
-        onClicked: pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
+        text: "About"
+        onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
     }
 
     MenuItem {
@@ -12,7 +12,7 @@ PullDownMenu {
     }
 
     MenuItem {
-        text: "About"
-        onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+        text: "Search"
+        onClicked: pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
     }
 }
