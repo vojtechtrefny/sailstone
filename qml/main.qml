@@ -45,6 +45,8 @@ ApplicationWindow {
         }
 
           VerticalScrollDecorator {}
+
+          SailstoneComponents.PullDownMenu {}
       }
     }
   }
