@@ -4,6 +4,7 @@ import Sailfish.Silica 1.0
 PullDownMenu {
     MenuItem {
         text: "Search cards"
+        onClicked: pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
     }
 
     MenuItem {
