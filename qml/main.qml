@@ -34,7 +34,17 @@ ApplicationWindow {
               horizontalItemAlignment: Grid.AlignHCenter
               verticalItemAlignment: Grid.AlignVCenter
 
-              Image { source: "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/EX1_001.png" }
+              Image {
+                source: "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/EX1_001.png"
+
+                MouseArea {
+                  anchors.fill: parent
+                  onClicked: {
+                      pageStack.push(Qt.resolvedUrl("sailstone_components/CardDetailPage.qml"))
+                  }
+                }
+              }
+
               Label { text: "name: Lightwarden\nrarity: RARE\ntype: MINION\ncost: 1" }
             }
 
