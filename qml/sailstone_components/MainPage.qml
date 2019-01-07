@@ -1,6 +1,8 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 
+import io.thp.pyotherside 1.4
+
 import "." as SailstoneComponents
 
 Page {
@@ -35,8 +37,6 @@ Page {
           Image {
             id: randomImage
 
-            source: "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/EX1_001.png"
-
             MouseArea {
               anchors.fill: parent
               onClicked: {
@@ -47,13 +47,39 @@ Page {
 
           Label {
             id: randomLabel
-            text: "name: Lightwarden\nrarity: RARE\ntype: MINION\ncost: 1"
           }
         }
 
         SectionHeader { text: "Classes" }
 
         SectionHeader { text: "Sets" }
+      }
+
+      Python {
+        id: py
+
+        Component.onCompleted: {
+            addImportPath(Qt.resolvedUrl("../../py"));
+
+            importModule('main', function () {});
+
+            getRandomCard();
+        }
+
+        function getRandomCard() {
+          py.call ('main.get_random_card', [], function(result) {
+            randomLabel.text = py.getattr(result, "name");
+            randomImage.source = py.getattr(result, "image");
+          });
+        }
+
+        onError: {
+          console.log('python error: ' + traceback);
+        }
+
+        onReceived: {
+          console.log('got message from python: ' + data);
+        }
       }
     }
 
