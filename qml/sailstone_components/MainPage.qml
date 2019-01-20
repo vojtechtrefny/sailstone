@@ -55,31 +55,15 @@ Page {
         SectionHeader { text: "Sets" }
       }
 
-      Python {
-        id: py
+      Component.onCompleted: {
+          getRandomCard();
+      }
 
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl("../../py"));
-
-            importModule('main', function () {});
-
-            getRandomCard();
-        }
-
-        function getRandomCard() {
-          py.call ('main.get_random_card', [], function(result) {
-            randomLabel.text = py.getattr(result, "name");
-            randomImage.source = py.getattr(result, "image");
-          });
-        }
-
-        onError: {
-          console.log('python error: ' + traceback);
-        }
-
-        onReceived: {
-          console.log('got message from python: ' + data);
-        }
+      function getRandomCard() {
+        mainWindow.python.call ('main.get_random_card', [], function(result) {
+          randomLabel.text = mainWindow.python.getattr(result, "name");
+          randomImage.source = mainWindow.python.getattr(result, "image");
+        });
       }
     }
 
