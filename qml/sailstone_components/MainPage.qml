@@ -40,7 +40,8 @@ Page {
             MouseArea {
               anchors.fill: parent
               onClicked: {
-                  pageStack.push(Qt.resolvedUrl("./CardDetailPage.qml"))
+                  pageStack.push(Qt.resolvedUrl("./CardDetailPage.qml"),
+                                 { cardName : randomLabel.text })
               }
             }
           }
@@ -62,7 +63,7 @@ Page {
       function getRandomCard() {
         mainWindow.python.call ('main.get_random_card', [], function(result) {
           randomLabel.text = mainWindow.python.getattr(result, "name");
-          randomImage.source = mainWindow.python.getattr(result, "image");
+          randomImage.source = mainWindow.python.getattr(result, "preview");
         });
       }
     }

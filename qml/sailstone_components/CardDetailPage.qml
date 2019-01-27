@@ -2,6 +2,9 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 
 Page {
+
+  property string cardName : ""
+
   SilicaListView {
     anchors.fill: parent
 
@@ -11,7 +14,7 @@ Page {
 
       PageHeader {
         id: header
-        title: "Lightwarden"
+        title: cardName
       }
 
       Column {
@@ -20,14 +23,20 @@ Page {
         spacing: Theme.paddingLarge
 
         Image {
-          source: "https://art.hearthstonejson.com/v1/render/latest/enUS/512x/EX1_001.png"
+          id: cardImage
+
           horizontalAlignment: Image.AlignHCenter
+          anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        SectionHeader { text: "Name" }
+        SectionHeader { text: "Text" }
 
         Label {
-          text: "Lightwarden"
+          id: labelText
+
+          font.pixelSize: Theme.fontSizeSmall
+          wrapMode: Text.Wrap
+          color: Theme.secondaryColor
 
           anchors {
             left: parent.left
@@ -36,7 +45,59 @@ Page {
             rightMargin: Theme.horizontalPageMargin
           }
         }
+
+        SectionHeader { text: "Stats" }
+
+        Label {
+          id: labelStats
+
+          font.pixelSize: Theme.fontSizeSmall
+          wrapMode: Text.Wrap
+          color: Theme.secondaryColor
+
+          anchors {
+            left: parent.left
+            leftMargin: Theme.horizontalPageMargin
+            right: parent.right
+            rightMargin: Theme.horizontalPageMargin
+          }
+        }
+
+        SectionHeader { text: "Type" }
+
+        Label {
+          id: labelType
+
+          font.pixelSize: Theme.fontSizeSmall
+          wrapMode: Text.Wrap
+          color: Theme.secondaryColor
+
+          anchors {
+            left: parent.left
+            leftMargin: Theme.horizontalPageMargin
+            right: parent.right
+            rightMargin: Theme.horizontalPageMargin
+          }
+        }
+
+        VerticalScrollDecorator {}
+
+        function getCardDetails(cardName) {
+          mainWindow.python.call ('main.get_card', [cardName], function(result) {
+            cardImage.source = mainWindow.python.getattr(result, "image");
+
+            labelText.text = mainWindow.python.getattr(result, "text");
+            labelStats.text = mainWindow.python.getattr(result, "stats");
+            labelType.text = mainWindow.python.getattr(result, "type");
+            })
+        }
+
+        Component.onCompleted: {
+            getCardDetails(cardName);
+        }
       }
     }
+
+    anchors.horizontalCenter: parent.horizontalCenter
   }
 }
