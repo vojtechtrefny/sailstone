@@ -3,11 +3,13 @@ import pyotherside
 import json
 import os
 import urllib.request
+import threading
 
 
 class API(object):
 
     single_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/{name}"
+    search_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/search/{name}"
 
     def __init__(self):
         self._api_key = None
@@ -41,6 +43,17 @@ class API(object):
 
         return Card(**card_data[0])
 
+    def search_cards(self, card_name):
+        try:
+            raw_data = self._api_call(self.search_card_endpoint.format(name=card_name))
+        except urllib.error.HTTPError:
+            # unfortunately this also means "no cards found"
+            return []
+
+        cards_data = json.loads(raw_data)
+
+        return [Card(**c) for c in cards_data]
+
 
 class CardsCache(dict):
     pass
@@ -73,6 +86,21 @@ def get_card(card_name):
         return cards_cache[card_name]
     else:
         raise NotImplementedError()  # FIXME
+
+
+def _search_fn(card_name):
+    cards = cards_api.search_cards(card_name)
+
+    for card in cards:
+        cards_cache[card.name] = card
+
+    pyotherside.send("searching_finished", cards)
+
+
+def search_card(card_name):
+    thread = threading.Thread(target=_search_fn, args=(card_name,))
+    thread.start()
+    thread.join()
 
 
 cards_cache = CardsCache()
