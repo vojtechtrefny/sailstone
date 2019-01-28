@@ -37,6 +37,12 @@ Page {
           Image {
             id: randomImage
 
+            BusyIndicator {
+              size: BusyIndicatorSize.Medium
+              anchors.centerIn: randomImage
+              running: randomImage.status != Image.Ready
+            }
+
             MouseArea {
               anchors.fill: parent
               onClicked: {

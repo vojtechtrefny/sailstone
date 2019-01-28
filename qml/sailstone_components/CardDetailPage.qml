@@ -27,6 +27,12 @@ Page {
 
           horizontalAlignment: Image.AlignHCenter
           anchors.horizontalCenter: parent.horizontalCenter
+
+          BusyIndicator {
+            size: BusyIndicatorSize.Medium
+            anchors.centerIn: cardImage
+            running: cardImage.status != Image.Ready
+          }
         }
 
         SectionHeader { text: "Text" }
