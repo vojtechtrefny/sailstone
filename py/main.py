@@ -7,6 +7,9 @@ import urllib.request
 import threading
 
 
+DATA_FOLDER = os.path.expandvars("$HOME/.local/share/harbour-sailstone")
+
+
 class API(object):
 
     single_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/{name}"
@@ -97,7 +100,7 @@ def get_card(card_name):
     if card_name in cards_cache.keys():
         return cards_cache[card_name]
     else:
-        raise NotImplementedError()  # FIXME
+        return cards_api.get_single_card(card_name)
 
 
 def _search_fn(card_name):
@@ -111,6 +114,25 @@ def _search_fn(card_name):
 
 def search_card(card_name):
     thread = threading.Thread(target=_search_fn, args=(card_name,))
+    thread.start()
+    thread.join()
+
+
+def _favourites_fn():
+    favourites = []
+
+    if not os.path.exists(os.path.join(DATA_FOLDER, "favourites.json")):
+        pyotherside.send("favourites_finished", favourites)
+
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "r") as f:
+        data = f.read()
+        favourites = json.loads(data)
+
+    pyotherside.send("favourites_finished", [get_card(f) for f in favourites])
+
+
+def get_favourites():
+    thread = threading.Thread(target=_favourites_fn)
     thread.start()
     thread.join()
 

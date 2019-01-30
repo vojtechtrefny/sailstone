@@ -9,6 +9,7 @@ PullDownMenu {
 
     MenuItem {
         text: "Favourites"
+        onClicked: pageStack.push(Qt.resolvedUrl("FavouritesPage.qml"))
     }
 
     MenuItem {
