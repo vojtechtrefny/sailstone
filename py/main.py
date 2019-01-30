@@ -2,6 +2,7 @@ import pyotherside
 
 import json
 import os
+import random
 import urllib.request
 import threading
 
@@ -10,6 +11,7 @@ class API(object):
 
     single_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/{name}"
     search_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/search/{name}"
+    cards_by_type_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/types/{type}?collectible={collectible}"
 
     def __init__(self):
         self._api_key = None
@@ -54,6 +56,15 @@ class API(object):
 
         return [Card(**c) for c in cards_data]
 
+    def get_random_card(self):
+        raw_data = self._api_call(self.cards_by_type_endpoint.format(type="Minion", collectible="1"))
+
+        cards_data = json.loads(raw_data)
+
+        random_card = random.choice(cards_data)
+
+        return Card(**random_card)
+
 
 class CardsCache(dict):
     pass
@@ -76,7 +87,7 @@ class Card(object):
 
 
 def get_random_card():
-    card = cards_api.get_single_card("Lightwarden")
+    card = cards_api.get_random_card()
     cards_cache[card.name] = card
     return card
 
