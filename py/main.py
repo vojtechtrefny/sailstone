@@ -10,7 +10,7 @@ import threading
 class API(object):
 
     single_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/{name}"
-    search_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/search/{name}"
+    search_card_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/search/{name}?collectible={collectible}"
     cards_by_type_endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/types/{type}?collectible={collectible}"
 
     def __init__(self):
@@ -45,9 +45,10 @@ class API(object):
 
         return Card(**card_data[0])
 
-    def search_cards(self, card_name):
+    def search_cards(self, card_name, collectible=True):
         try:
-            raw_data = self._api_call(self.search_card_endpoint.format(name=card_name))
+            raw_data = self._api_call(self.search_card_endpoint.format(name=card_name,
+                                                                       collectible="1" if collectible else "0"))
         except urllib.error.HTTPError:
             # unfortunately this also means "no cards found"
             return []
