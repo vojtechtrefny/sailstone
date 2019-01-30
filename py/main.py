@@ -105,7 +105,9 @@ def get_card(card_name):
     if card_name in cards_cache.keys():
         return cards_cache[card_name]
     else:
-        return cards_api.get_single_card(card_name)
+        card = cards_api.get_single_card(card_name)
+        cards_cache[card.name] = card
+        return card
 
 
 def _search_fn(card_name):
