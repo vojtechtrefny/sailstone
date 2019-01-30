@@ -3,6 +3,7 @@ import pyotherside
 import json
 import os
 import random
+import urllib.parse
 import urllib.request
 import threading
 
@@ -39,6 +40,8 @@ class API(object):
         return self._api_key
 
     def get_single_card(self, card_name):
+        card_name = urllib.parse.quote(card_name)  # safe card name for the url
+
         raw_data = self._api_call(self.single_card_endpoint.format(name=card_name))
 
         card_data = json.loads(raw_data)
@@ -49,6 +52,8 @@ class API(object):
         return Card(**card_data[0])
 
     def search_cards(self, card_name, collectible=True):
+        card_name = urllib.parse.quote(card_name)  # safe card name for the url
+
         try:
             raw_data = self._api_call(self.search_card_endpoint.format(name=card_name,
                                                                        collectible="1" if collectible else "0"))
