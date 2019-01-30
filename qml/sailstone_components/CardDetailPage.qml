@@ -4,8 +4,11 @@ import Sailfish.Silica 1.0
 Page {
 
   property string cardName : ""
+  property bool inFavourites: false
 
   SilicaListView {
+    id: detailPage
+
     anchors.fill: parent
 
     header: Column {
@@ -98,12 +101,43 @@ Page {
             })
         }
 
+        function isInFavourites(cardName) {
+          mainWindow.python.call ('main.is_in_favourites', [cardName], function(result) {
+            inFavourites = result
+            })
+        }
+
         Component.onCompleted: {
+            isInFavourites(cardName);
             getCardDetails(cardName);
         }
       }
     }
 
     anchors.horizontalCenter: parent.horizontalCenter
+
+    PullDownMenu {
+      MenuItem {
+        text: "Add to Favourites"
+        onClicked: addToFavourites(cardName)
+        visible: !inFavourites
+
+        function addToFavourites(cardName) {
+          mainWindow.python.call ('main.add_to_favourites', [cardName], function() {});
+          inFavourites = true;
+        }
+      }
+
+      MenuItem {
+        text: "Remove from Favourites"
+        onClicked:  Remorse.popupAction (detailPage, "Removing...", removeFromFavourites(cardName), 5000)
+        visible: inFavourites
+
+        function removeFromFavourites(cardName) {
+          mainWindow.python.call ('main.remove_from_favourites', [cardName], function() {});
+          inFavourites = false;
+        }
+      }
+    }
   }
 }

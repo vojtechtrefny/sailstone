@@ -144,5 +144,43 @@ def get_favourites():
     thread.join()
 
 
+def is_in_favourites(card_name):
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "r") as f:
+        data = f.read()
+        favourites = json.loads(data)
+
+        return card_name in favourites
+
+
+def add_to_favourites(card_name):
+    favourites = []
+
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "r") as f:
+        data = f.read()
+        if data:
+            favourites = json.loads(data)
+
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "w+") as f:
+        if card_name not in favourites:
+            favourites.append(card_name)
+
+        f.write(json.dumps(favourites))
+
+
+def remove_from_favourites(card_name):
+    favourites = []
+
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "r") as f:
+        data = f.read()
+        if data:
+            favourites = json.loads(data)
+
+    with open(os.path.join(DATA_FOLDER, "favourites.json"), "w+") as f:
+        if card_name in favourites:
+            favourites.remove(card_name)
+
+        f.write(json.dumps(favourites))
+
+
 cards_cache = CardsCache()
 cards_api = API()
