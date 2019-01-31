@@ -4,10 +4,35 @@ import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.4
 
 Page {
-  SilicaListView {
-    id: favouritesPage
+  id: favouritesPage
 
-    property bool searching: false
+  property bool searching: false
+
+  function getFavourites(cardName) {
+    favouritesPage.searching = true
+    mainWindow.python.call ('main.get_favourites', [], function() {
+
+    });
+  }
+
+  Component.onCompleted: {
+    mainWindow.python.setHandler('favourites_finished', function (cards) {
+        favouritesPage.searching = false;
+        for (var i = 0; i < cards.length; i++) {
+          var cardName = mainWindow.python.getattr(cards[i], "name");
+          listModel.append({"name": cardName});
+        }
+    });
+  }
+
+  onStatusChanged: {
+    if (status === PageStatus.Active) {
+      listModel.clear();
+      favouritesPage.getFavourites();
+    }
+  }
+
+  SilicaListView {
 
     anchors.fill: parent
 
@@ -53,25 +78,5 @@ Page {
           }
         }
      }
-
-    Component.onCompleted: {
-      mainWindow.python.setHandler('favourites_finished', function (cards) {
-          favouritesPage.searching = false;
-          for (var i = 0; i < cards.length; i++) {
-            var cardName = mainWindow.python.getattr(cards[i], "name");
-            listModel.append({"name": cardName});
-          }
-      });
-
-      listModel.clear();
-      favouritesPage.getFavourites();
-    }
-
-    function getFavourites(cardName) {
-      favouritesPage.searching = true
-      mainWindow.python.call ('main.get_favourites', [], function() {
-
-      });
-    }
   }
 }
