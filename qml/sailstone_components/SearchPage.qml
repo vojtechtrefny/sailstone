@@ -72,5 +72,7 @@ Page {
 
       });
     }
+
+    VerticalScrollDecorator {}
   }
 }
