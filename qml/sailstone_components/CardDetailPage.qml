@@ -130,7 +130,7 @@ Page {
 
       MenuItem {
         text: "Remove from Favourites"
-        onClicked:  Remorse.popupAction (detailPage, "Removing...", removeFromFavourites(cardName), 5000)
+        onClicked:  Remorse.popupAction (detailPage, "Removing...", function() { removeFromFavourites(cardName) }, 5000)
         visible: inFavourites
 
         function removeFromFavourites(cardName) {
